@@ -2,46 +2,56 @@
 <html lang="ru"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>Пользователь</title>
-</head>
+<head th:replace="~{fragments/assets :: head('Пользователь')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1 th:text="${user.profile == null ? user.username : user.profile.displayName}">Пользователь</h1>
+<main class="container page-shell">
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-success" th:if="${message}" th:text="${message}">Сообщение</div>
+            <div class="alert alert-danger" th:if="${error}" th:text="${error}">Ошибка</div>
 
-    <p th:if="${message}" th:text="${message}">Сообщение</p>
-    <p th:if="${error}" th:text="${error}">Ошибка</p>
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                <div>
+                    <h1 class="h3 mb-3" th:text="${user.profile == null ? user.username : user.profile.displayName}">
+                        Пользователь
+                    </h1>
 
-    <p th:if="${user.profile != null and user.profile.avatarFilename != null}">
-        <img th:src="@{/profiles/{id}/avatar(id=${user.id})}" alt="Фото профиля" width="160">
-    </p>
+                    <p class="mb-1"><b>Логин:</b> <span th:text="${user.username}">username</span></p>
+                    <p class="mb-1"><b>Город:</b> <span th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</span></p>
+                    <p class="mb-1"><b>Интересы:</b> <span th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</span></p>
+                    <p class="mb-3"><b>О себе:</b> <span th:text="${user.profile == null or user.profile.bio == null ? 'Не указано' : user.profile.bio}">О себе</span></p>
 
-    <p><b>Логин:</b> <span th:text="${user.username}">username</span></p>
-    <p><b>Город:</b> <span th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</span></p>
-    <p><b>Интересы:</b> <span th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</span></p>
-    <p><b>О себе:</b> <span th:text="${user.profile == null or user.profile.bio == null ? 'Не указано' : user.profile.bio}">О себе</span></p>
+                    <div sec:authorize="isAuthenticated()">
+                        <div class="alert alert-secondary" th:if="${friendshipStatus == 'SELF'}">Это ваш профиль.</div>
+                        <div class="alert alert-success" th:if="${friendshipStatus == 'FRIEND'}">Этот пользователь у вас в друзьях.</div>
+                        <div class="alert alert-info" th:if="${friendshipStatus == 'OUTGOING'}">Заявка уже отправлена.</div>
+                        <div class="alert alert-warning" th:if="${friendshipStatus == 'INCOMING'}">Этот пользователь отправил вам заявку.</div>
 
-    <div sec:authorize="isAuthenticated()">
-        <p th:if="${friendshipStatus == 'SELF'}">Это ваш профиль.</p>
-        <p th:if="${friendshipStatus == 'FRIEND'}">Этот пользователь у вас в друзьях.</p>
-        <p th:if="${friendshipStatus == 'OUTGOING'}">Заявка уже отправлена.</p>
-        <p th:if="${friendshipStatus == 'INCOMING'}">Этот пользователь отправил вам заявку. Перейдите в раздел заявок.</p>
+                        <form th:if="${friendshipStatus == 'NONE'}"
+                              th:action="@{/users/{id}/friend-requests(id=${user.id})}"
+                              method="post">
+                            <button type="submit" class="btn btn-primary">Добавить в друзья</button>
+                        </form>
+                    </div>
 
-        <form th:if="${friendshipStatus == 'NONE'}"
-              th:action="@{/users/{id}/friend-requests(id=${user.id})}"
-              method="post">
-            <button type="submit">Добавить в друзья</button>
-        </form>
+                    <p sec:authorize="isAnonymous()">
+                        <a th:href="@{/login}">Войдите</a>, чтобы отправить заявку в друзья.
+                    </p>
+
+                    <a class="btn btn-outline-secondary mt-2" th:href="@{/users}">Назад к пользователям</a>
+                </div>
+
+                <img th:if="${user.profile != null and user.profile.avatarFilename != null}"
+                     th:src="@{/profiles/{id}/avatar(id=${user.id})}"
+                     alt="Фото профиля"
+                     class="avatar-lg rounded border">
+            </div>
+        </div>
     </div>
-
-    <p sec:authorize="isAnonymous()">
-        <a th:href="@{/login}">Войдите</a>, чтобы отправить заявку в друзья.
-    </p>
-
-    <p><a th:href="@{/users}">Назад к пользователям</a></p>
 </main>
+
+<th:block th:replace="~{fragments/assets :: scripts}"></th:block>
 </body>
 </html>

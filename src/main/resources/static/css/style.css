@@ -1,0 +1,25 @@
+body {
+    background-color: #f6f7f9;
+}
+
+.page-shell {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.avatar-sm {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+}
+
+.avatar-lg {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}

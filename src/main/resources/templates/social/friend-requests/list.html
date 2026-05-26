@@ -1,76 +1,101 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Заявки в друзья</title>
-</head>
+<head th:replace="~{fragments/assets :: head('Заявки в друзья')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1>Заявки в друзья</h1>
+<main class="container page-shell">
+    <h1 class="h3 mb-3">Заявки в друзья</h1>
 
-    <p th:if="${message}" th:text="${message}">Сообщение</p>
-    <p th:if="${error}" th:text="${error}">Ошибка</p>
+    <div class="alert alert-success" th:if="${message}" th:text="${message}">Сообщение</div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">Ошибка</div>
 
-    <h2>Входящие заявки</h2>
-    <p th:if="${#lists.isEmpty(incomingRequests)}">Входящих заявок нет.</p>
-    <table th:if="${!#lists.isEmpty(incomingRequests)}" border="1">
-        <thead>
-        <tr>
-            <th>Пользователь</th>
-            <th>Дата заявки</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="request : ${incomingRequests}">
-            <td>
-                <a th:href="@{/users/{id}(id=${request.requester.id})}"
-                   th:text="${request.requester.profile == null ? request.requester.username : request.requester.profile.displayName}">
-                    Пользователь
-                </a>
-            </td>
-            <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
-            <td>
-                <form th:action="@{/friend-requests/{id}/accept(id=${request.id})}" method="post">
-                    <button type="submit">Принять</button>
-                </form>
-                <form th:action="@{/friend-requests/{id}/reject(id=${request.id})}" method="post">
-                    <button type="submit">Отклонить</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Входящие заявки</h2>
+                    <div class="alert alert-secondary" th:if="${#lists.isEmpty(incomingRequests)}">
+                        Входящих заявок нет.
+                    </div>
 
-    <h2>Исходящие заявки</h2>
-    <p th:if="${#lists.isEmpty(outgoingRequests)}">Исходящих заявок нет.</p>
-    <table th:if="${!#lists.isEmpty(outgoingRequests)}" border="1">
-        <thead>
-        <tr>
-            <th>Пользователь</th>
-            <th>Дата заявки</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="request : ${outgoingRequests}">
-            <td>
-                <a th:href="@{/users/{id}(id=${request.receiver.id})}"
-                   th:text="${request.receiver.profile == null ? request.receiver.username : request.receiver.profile.displayName}">
-                    Пользователь
-                </a>
-            </td>
-            <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
-            <td>
-                <form th:action="@{/friend-requests/{id}/cancel(id=${request.id})}" method="post">
-                    <button type="submit">Отменить</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(incomingRequests)}">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Пользователь</th>
+                                <th>Дата</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="request : ${incomingRequests}">
+                                <td>
+                                    <a th:href="@{/users/{id}(id=${request.requester.id})}"
+                                       th:text="${request.requester.profile == null ? request.requester.username : request.requester.profile.displayName}">
+                                        Пользователь
+                                    </a>
+                                </td>
+                                <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
+                                <td>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <form th:action="@{/friend-requests/{id}/accept(id=${request.id})}" method="post">
+                                            <button type="submit" class="btn btn-success btn-sm">Принять</button>
+                                        </form>
+                                        <form th:action="@{/friend-requests/{id}/reject(id=${request.id})}" method="post">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Отклонить</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h4 mb-3">Исходящие заявки</h2>
+                    <div class="alert alert-secondary" th:if="${#lists.isEmpty(outgoingRequests)}">
+                        Исходящих заявок нет.
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(outgoingRequests)}">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Пользователь</th>
+                                <th>Дата</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="request : ${outgoingRequests}">
+                                <td>
+                                    <a th:href="@{/users/{id}(id=${request.receiver.id})}"
+                                       th:text="${request.receiver.profile == null ? request.receiver.username : request.receiver.profile.displayName}">
+                                        Пользователь
+                                    </a>
+                                </td>
+                                <td th:text="${#temporals.format(request.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
+                                <td>
+                                    <form th:action="@{/friend-requests/{id}/cancel(id=${request.id})}" method="post">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Отменить</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
+
+<th:block th:replace="~{fragments/assets :: scripts}"></th:block>
 </body>
 </html>

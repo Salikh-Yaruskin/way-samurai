@@ -1,85 +1,103 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Пользователи</title>
-</head>
+<head th:replace="~{fragments/assets :: head('Пользователи')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1>Пользователи</h1>
+<main class="container page-shell">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Пользователи</h1>
+    </div>
 
-    <form th:action="@{/users}" method="get">
-        <p>
-            <label for="name">Имя или логин</label><br>
-            <input type="text" id="name" name="name" th:value="${name}">
-        </p>
-        <p>
-            <label for="city">Город</label><br>
-            <input type="text" id="city" name="city" th:value="${city}">
-        </p>
-        <p>
-            <label for="interests">Интересы</label><br>
-            <input type="text" id="interests" name="interests" th:value="${interests}">
-        </p>
-        <button type="submit">Найти</button>
-        <a th:href="@{/users}">Сбросить</a>
+    <form class="card mb-4" th:action="@{/users}" method="get">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="name" class="form-label">Имя или логин</label>
+                    <input type="text" id="name" name="name" th:value="${name}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="city" class="form-label">Город</label>
+                    <input type="text" id="city" name="city" th:value="${city}" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="interests" class="form-label">Интересы</label>
+                    <input type="text" id="interests" name="interests" th:value="${interests}" class="form-control">
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">Найти</button>
+                <a class="btn btn-outline-secondary" th:href="@{/users}">Сбросить</a>
+            </div>
+        </div>
     </form>
 
-    <p th:if="${users.empty}">Пользователи не найдены.</p>
-
-    <table th:if="${!users.empty}" border="1">
-        <thead>
-        <tr>
-            <th>Фото</th>
-            <th>Логин</th>
-            <th>Имя</th>
-            <th>Город</th>
-            <th>Интересы</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users.content}">
-            <td>
-                <img th:if="${user.profile != null and user.profile.avatarFilename != null}"
-                     th:src="@{/profiles/{id}/avatar(id=${user.id})}"
-                     alt="Фото"
-                     width="80">
-                <span th:if="${user.profile == null or user.profile.avatarFilename == null}">Нет фото</span>
-            </td>
-            <td th:text="${user.username}">username</td>
-            <td th:text="${user.profile == null ? user.username : user.profile.displayName}">Имя</td>
-            <td th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</td>
-            <td th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</td>
-            <td><a th:href="@{/users/{id}(id=${user.id})}">Открыть</a></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div th:if="${users.totalPages > 1}">
-        <p>
-            Страница <span th:text="${users.number + 1}">1</span>
-            из <span th:text="${users.totalPages}">1</span>
-        </p>
-        <p>
-            <a th:if="${users.hasPrevious()}"
-               th:href="@{/users(page=${users.number - 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
-                Назад
-            </a>
-            <span th:each="pageNumber : ${#numbers.sequence(0, users.totalPages - 1)}">
-                <a th:if="${pageNumber != users.number}"
-                   th:href="@{/users(page=${pageNumber},size=${users.size},name=${name},city=${city},interests=${interests})}"
-                   th:text="${pageNumber + 1}">1</a>
-                <span th:if="${pageNumber == users.number}" th:text="${pageNumber + 1}">1</span>
-            </span>
-            <a th:if="${users.hasNext()}"
-               th:href="@{/users(page=${users.number + 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
-                Вперед
-            </a>
-        </p>
+    <div class="alert alert-secondary" th:if="${users.empty}">
+        Пользователи не найдены.
     </div>
+
+    <div class="card" th:if="${!users.empty}">
+        <div class="table-responsive">
+            <table class="table table-striped mb-0">
+                <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>Логин</th>
+                    <th>Имя</th>
+                    <th>Город</th>
+                    <th>Интересы</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users.content}">
+                    <td>
+                        <img th:if="${user.profile != null and user.profile.avatarFilename != null}"
+                             th:src="@{/profiles/{id}/avatar(id=${user.id})}"
+                             alt="Фото"
+                             class="avatar-sm rounded border">
+                        <span th:if="${user.profile == null or user.profile.avatarFilename == null}">Нет фото</span>
+                    </td>
+                    <td th:text="${user.username}">username</td>
+                    <td th:text="${user.profile == null ? user.username : user.profile.displayName}">Имя</td>
+                    <td th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</td>
+                    <td th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-sm" th:href="@{/users/{id}(id=${user.id})}">Открыть</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <nav class="mt-4" th:if="${users.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${!users.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/users(page=${users.number - 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
+                    Назад
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="pageNumber : ${#numbers.sequence(0, users.totalPages - 1)}"
+                th:classappend="${pageNumber == users.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/users(page=${pageNumber},size=${users.size},name=${name},city=${city},interests=${interests})}"
+                   th:text="${pageNumber + 1}">
+                    1
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${!users.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/users(page=${users.number + 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
+                    Вперед
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
+
+<th:block th:replace="~{fragments/assets :: scripts}"></th:block>
 </body>
 </html>

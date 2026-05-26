@@ -1,41 +1,54 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-</head>
+<head th:replace="~{fragments/assets :: head('Регистрация')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1>Регистрация</h1>
+<main class="container page-shell">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="h3 mb-4">Регистрация</h1>
 
-    <form th:action="@{/register}" th:object="${request}" method="post">
-        <p>
-            <label for="username">Имя пользователя</label><br>
-            <input type="text" id="username" th:field="*{username}" required>
-        </p>
-        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Ошибка имени</p>
+                    <form th:action="@{/register}" th:object="${request}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Имя пользователя</label>
+                            <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                                Ошибка имени
+                            </div>
+                        </div>
 
-        <p>
-            <label for="password">Пароль</label><br>
-            <input type="password" id="password" th:field="*{password}" required>
-        </p>
-        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Ошибка пароля</p>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" id="password" th:field="*{password}" class="form-control" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                Ошибка пароля
+                            </div>
+                        </div>
 
-        <p>
-            <label for="confirmPassword">Повторите пароль</label><br>
-            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required>
-        </p>
-        <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Ошибка повтора пароля</p>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Повторите пароль</label>
+                            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+                                Ошибка повтора пароля
+                            </div>
+                        </div>
 
-        <button type="submit">Зарегистрироваться</button>
-    </form>
+                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                    </form>
 
-    <p>
-        Уже есть аккаунт?
-        <a th:href="@{/login}">Войти</a>
-    </p>
+                    <p class="mt-3 mb-0">
+                        Уже есть аккаунт?
+                        <a th:href="@{/login}">Войти</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
+
+<th:block th:replace="~{fragments/assets :: scripts}"></th:block>
 </body>
 </html>

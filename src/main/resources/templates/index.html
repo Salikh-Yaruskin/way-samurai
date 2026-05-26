@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная</title>
-</head>
+<head th:replace="~{fragments/assets :: head('Главная')}"></head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1>Социальная сеть</h1>
-    <p>Здесь можно найти пользователей, заполнить профиль, отправить заявку в друзья и смотреть список друзей.</p>
+<main class="container page-shell">
+    <section class="bg-white border rounded p-4 p-md-5">
+        <h1 class="mb-3">Социальная сеть</h1>
+        <p class="lead mb-4">
+            Здесь можно найти пользователей, заполнить профиль, отправить заявку в друзья и смотреть список друзей.
+        </p>
 
-    <ul>
-        <li><a th:href="@{/users}">Список пользователей</a></li>
-        <li><a th:href="@{/profile}">Мой профиль</a></li>
-        <li><a th:href="@{/friends}">Мои друзья</a></li>
-        <li><a th:href="@{/friend-requests}">Заявки в друзья</a></li>
-    </ul>
+        <div class="row g-3">
+            <div class="col-md-6 col-lg-3">
+                <a class="btn btn-primary w-100" th:href="@{/users}">Пользователи</a>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <a class="btn btn-outline-primary w-100" th:href="@{/profile}">Мой профиль</a>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <a class="btn btn-outline-primary w-100" th:href="@{/friends}">Друзья</a>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <a class="btn btn-outline-primary w-100" th:href="@{/friend-requests}">Заявки</a>
+            </div>
+        </div>
+    </section>
 </main>
+
+<th:block th:replace="~{fragments/assets :: scripts}"></th:block>
 </body>
 </html>
