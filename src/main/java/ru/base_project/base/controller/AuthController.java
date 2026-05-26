@@ -31,7 +31,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("request") MaboyRegisterRequest request,
                            BindingResult bindingResult) {
-        if (!request.password().equals(request.confirmPassword())) {
+        if (request.password() != null && !request.password().equals(request.confirmPassword())) {
             bindingResult.rejectValue("confirmPassword",
                     "password.mismatch",
                     "Пароли не совпадают");

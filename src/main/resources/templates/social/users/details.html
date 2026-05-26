@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователь</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1 th:text="${user.profile == null ? user.username : user.profile.displayName}">Пользователь</h1>
+
+    <p th:if="${message}" th:text="${message}">Сообщение</p>
+    <p th:if="${error}" th:text="${error}">Ошибка</p>
+
+    <p th:if="${user.profile != null and user.profile.avatarFilename != null}">
+        <img th:src="@{/profiles/{id}/avatar(id=${user.id})}" alt="Фото профиля" width="160">
+    </p>
+
+    <p><b>Логин:</b> <span th:text="${user.username}">username</span></p>
+    <p><b>Город:</b> <span th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</span></p>
+    <p><b>Интересы:</b> <span th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</span></p>
+    <p><b>О себе:</b> <span th:text="${user.profile == null or user.profile.bio == null ? 'Не указано' : user.profile.bio}">О себе</span></p>
+
+    <div sec:authorize="isAuthenticated()">
+        <p th:if="${friendshipStatus == 'SELF'}">Это ваш профиль.</p>
+        <p th:if="${friendshipStatus == 'FRIEND'}">Этот пользователь у вас в друзьях.</p>
+        <p th:if="${friendshipStatus == 'OUTGOING'}">Заявка уже отправлена.</p>
+        <p th:if="${friendshipStatus == 'INCOMING'}">Этот пользователь отправил вам заявку. Перейдите в раздел заявок.</p>
+
+        <form th:if="${friendshipStatus == 'NONE'}"
+              th:action="@{/users/{id}/friend-requests(id=${user.id})}"
+              method="post">
+            <button type="submit">Добавить в друзья</button>
+        </form>
+    </div>
+
+    <p sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Войдите</a>, чтобы отправить заявку в друзья.
+    </p>
+
+    <p><a th:href="@{/users}">Назад к пользователям</a></p>
+</main>
+</body>
+</html>

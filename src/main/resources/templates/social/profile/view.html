@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой профиль</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Мой профиль</h1>
+
+    <p th:if="${profile.avatarFilename != null}">
+        <img th:src="@{/profiles/{id}/avatar(id=${profile.user.id})}" alt="Фото профиля" width="160">
+    </p>
+
+    <p><b>Логин:</b> <span th:text="${profile.user.username}">username</span></p>
+    <p><b>Имя:</b> <span th:text="${profile.displayName}">Имя</span></p>
+    <p><b>Город:</b> <span th:text="${profile.city ?: 'Не указан'}">Город</span></p>
+    <p><b>Интересы:</b> <span th:text="${profile.interests ?: 'Не указаны'}">Интересы</span></p>
+    <p><b>О себе:</b> <span th:text="${profile.bio ?: 'Не указано'}">О себе</span></p>
+
+    <p><a th:href="@{/profile/edit}">Редактировать профиль</a></p>
+</main>
+</body>
+</html>

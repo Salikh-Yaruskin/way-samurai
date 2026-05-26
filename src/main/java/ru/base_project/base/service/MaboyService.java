@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.base_project.base.domain.api.MaboyRegisterRequest;
 import ru.base_project.base.domain.entity.MaboyEntity;
 import ru.base_project.base.domain.Role;
+import ru.base_project.base.domain.entity.SocialProfileEntity;
 import ru.base_project.base.repository.MaboyRepository;
+import ru.base_project.base.repository.SocialProfileRepository;
 
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ public class MaboyService {
 
     private final PasswordEncoder passwordEncoder;
     private final MaboyRepository maboyRepository;
+    private final SocialProfileRepository socialProfileRepository;
 
     @Transactional
     public void register(MaboyRegisterRequest request) {
@@ -25,7 +28,12 @@ public class MaboyService {
         maboy.setPassword(passwordEncoder.encode(request.password()));
         maboy.setRole(Role.ROLE_USER);
 
-        maboyRepository.save(maboy);
+        var saved = maboyRepository.save(maboy);
+
+        var profile = new SocialProfileEntity();
+        profile.setUser(saved);
+        profile.setDisplayName(saved.getUsername());
+        socialProfileRepository.save(profile);
     }
 
     @Transactional

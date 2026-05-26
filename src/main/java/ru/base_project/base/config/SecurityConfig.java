@@ -20,6 +20,8 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/profile/**", "/friends/**", "/friend-requests/**").authenticated()
+                        .requestMatchers("/users/*/friend-requests").authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

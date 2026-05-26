@@ -1,107 +1,33 @@
 <header th:fragment="header"
         xmlns:th="http://www.thymeleaf.org"
         xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container">
-
-            <a class="navbar-brand fw-bold" th:href="@{/}">
-                BaseProject
-            </a>
-
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar"
-                    aria-expanded="false"
-                    aria-label="Переключить навигацию">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="mainNavbar">
-
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">Главная</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/posts}">Посты</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/media}">Файлы</a>
-                    </li>
-
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/profile}">Профиль</a>
-                    </li>
-
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/posts/my}">Мои посты</a>
-                    </li>
-
-                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link dropdown-toggle"
-                           href="#"
-                           role="button"
-                           data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Админка
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" th:href="@{/admin}">
-                                    Панель администратора
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" th:href="@{/users}">
-                                    Пользователи
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <div class="d-flex align-items-center gap-2">
-
-                    <span class="navbar-text text-light"
-                          sec:authorize="isAuthenticated()">
-                        Привет,
-                        <span sec:authentication="name"></span>
-                    </span>
-
-                    <a class="btn btn-outline-light btn-sm"
-                       sec:authorize="isAnonymous()"
-                       th:href="@{/login}">
-                        Войти
-                    </a>
-
-                    <a class="btn btn-primary btn-sm"
-                       sec:authorize="isAnonymous()"
-                       th:href="@{/register}">
-                        Регистрация
-                    </a>
-
-                    <form sec:authorize="isAuthenticated()"
-                          th:action="@{/logout}"
-                          method="post"
-                          class="m-0">
-
-                        <input type="hidden"
-                               th:if="${_csrf != null}"
-                               th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}">
-
-                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                            Выйти
-                        </button>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </nav>
+    <p>
+        <a th:href="@{/}">Главная</a>
+        |
+        <a th:href="@{/users}">Пользователи</a>
+        |
+        <a th:href="@{/media}">Файлы</a>
+        <span sec:authorize="isAuthenticated()">
+            |
+            <a th:href="@{/profile}">Мой профиль</a>
+            |
+            <a th:href="@{/friends}">Друзья</a>
+            |
+            <a th:href="@{/friend-requests}">Заявки</a>
+        </span>
+        <span sec:authorize="isAnonymous()">
+            |
+            <a th:href="@{/login}">Войти</a>
+            |
+            <a th:href="@{/register}">Регистрация</a>
+        </span>
+        <span sec:authorize="isAuthenticated()">
+            |
+            Привет, <span sec:authentication="name"></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Выйти</button>
+            </form>
+        </span>
+    </p>
+    <hr>
 </header>

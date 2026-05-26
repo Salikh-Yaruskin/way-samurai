@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Друзья</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Друзья</h1>
+
+    <form th:action="@{/friends}" method="get">
+        <p>
+            <label for="name">Имя или логин</label><br>
+            <input type="text" id="name" name="name" th:value="${name}">
+        </p>
+        <p>
+            <label for="addedFrom">Добавлен с</label><br>
+            <input type="date" id="addedFrom" name="addedFrom" th:value="${addedFrom}">
+        </p>
+        <p>
+            <label for="addedTo">Добавлен по</label><br>
+            <input type="date" id="addedTo" name="addedTo" th:value="${addedTo}">
+        </p>
+        <button type="submit">Фильтровать</button>
+        <a th:href="@{/friends}">Сбросить</a>
+    </form>
+
+    <p th:if="${#lists.isEmpty(friends)}">Друзья не найдены.</p>
+
+    <table th:if="${!#lists.isEmpty(friends)}" border="1">
+        <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Имя</th>
+            <th>Город</th>
+            <th>Интересы</th>
+            <th>Дата добавления</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="friend : ${friends}">
+            <td th:text="${friend.username}">username</td>
+            <td th:text="${friend.displayName}">Имя</td>
+            <td th:text="${friend.city ?: 'Не указан'}">Город</td>
+            <td th:text="${friend.interests ?: 'Не указаны'}">Интересы</td>
+            <td th:text="${#temporals.format(friend.addedAt, 'dd.MM.yyyy HH:mm')}">01.01.2026</td>
+            <td><a th:href="@{/users/{id}(id=${friend.userId})}">Открыть</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main>
+    <h1>Пользователи</h1>
+
+    <form th:action="@{/users}" method="get">
+        <p>
+            <label for="name">Имя или логин</label><br>
+            <input type="text" id="name" name="name" th:value="${name}">
+        </p>
+        <p>
+            <label for="city">Город</label><br>
+            <input type="text" id="city" name="city" th:value="${city}">
+        </p>
+        <p>
+            <label for="interests">Интересы</label><br>
+            <input type="text" id="interests" name="interests" th:value="${interests}">
+        </p>
+        <button type="submit">Найти</button>
+        <a th:href="@{/users}">Сбросить</a>
+    </form>
+
+    <p th:if="${users.empty}">Пользователи не найдены.</p>
+
+    <table th:if="${!users.empty}" border="1">
+        <thead>
+        <tr>
+            <th>Фото</th>
+            <th>Логин</th>
+            <th>Имя</th>
+            <th>Город</th>
+            <th>Интересы</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users.content}">
+            <td>
+                <img th:if="${user.profile != null and user.profile.avatarFilename != null}"
+                     th:src="@{/profiles/{id}/avatar(id=${user.id})}"
+                     alt="Фото"
+                     width="80">
+                <span th:if="${user.profile == null or user.profile.avatarFilename == null}">Нет фото</span>
+            </td>
+            <td th:text="${user.username}">username</td>
+            <td th:text="${user.profile == null ? user.username : user.profile.displayName}">Имя</td>
+            <td th:text="${user.profile == null or user.profile.city == null ? 'Не указан' : user.profile.city}">Город</td>
+            <td th:text="${user.profile == null or user.profile.interests == null ? 'Не указаны' : user.profile.interests}">Интересы</td>
+            <td><a th:href="@{/users/{id}(id=${user.id})}">Открыть</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${users.totalPages > 1}">
+        <p>
+            Страница <span th:text="${users.number + 1}">1</span>
+            из <span th:text="${users.totalPages}">1</span>
+        </p>
+        <p>
+            <a th:if="${users.hasPrevious()}"
+               th:href="@{/users(page=${users.number - 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
+                Назад
+            </a>
+            <span th:each="pageNumber : ${#numbers.sequence(0, users.totalPages - 1)}">
+                <a th:if="${pageNumber != users.number}"
+                   th:href="@{/users(page=${pageNumber},size=${users.size},name=${name},city=${city},interests=${interests})}"
+                   th:text="${pageNumber + 1}">1</a>
+                <span th:if="${pageNumber == users.number}" th:text="${pageNumber + 1}">1</span>
+            </span>
+            <a th:if="${users.hasNext()}"
+               th:href="@{/users(page=${users.number + 1},size=${users.size},name=${name},city=${city},interests=${interests})}">
+                Вперед
+            </a>
+        </p>
+    </div>
+</main>
+</body>
+</html>
