@@ -21,13 +21,21 @@
                         <a class="nav-link" th:href="@{/}">Главная</a>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/catalog}">Каталог</a>
+                    </li>
+
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/cart}">Корзина</a>
+                    </li>
+
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link dropdown-toggle"
                            href="#"
                            role="button"
                            data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            Магазин
+                            Управление магазином
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/shop/products}">Товары</a></li>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.base_project.base.domain.api.ShopCategoryForm;
+import ru.base_project.base.domain.api.CheckoutForm;
 import ru.base_project.base.domain.api.ShopOrderForm;
 import ru.base_project.base.domain.api.ShopProductForm;
 import ru.base_project.base.domain.entity.ShopCategoryEntity;
@@ -13,6 +14,7 @@ import ru.base_project.base.repository.ShopCategoryRepository;
 import ru.base_project.base.repository.ShopOrderRepository;
 import ru.base_project.base.repository.ShopProductRepository;
 
+import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -89,6 +91,20 @@ public class ShopService {
     public ShopOrderEntity createOrder(ShopOrderForm form) {
         var order = new ShopOrderEntity();
         applyOrderForm(order, form);
+        return orderRepository.save(order);
+    }
+
+    @Transactional
+    public ShopOrderEntity checkout(CheckoutForm form, Collection<UUID> productIds) {
+        var order = new ShopOrderEntity();
+        order.setCustomerName(form.getCustomerName());
+        order.setCustomerEmail(form.getCustomerEmail());
+        order.getProducts().addAll(productRepository.findAllByIdIn(productIds));
+
+        if (order.getProducts().isEmpty()) {
+            throw new IllegalArgumentException("Корзина пуста");
+        }
+
         return orderRepository.save(order);
     }
 
