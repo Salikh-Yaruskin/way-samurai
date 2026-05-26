@@ -13,10 +13,37 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div th:replace="~{fragments/loading :: loading}"></div>
 
-<main>
-<div class="container min-vh-100 d-flex align-items-center justify-content-center">
-</div>
+<main class="container py-4">
+    <h1 class="h3 mb-3">Интернет-магазин</h1>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark h-100" th:href="@{/shop/products}">
+                <div class="card-body">
+                    <h2 class="h5">Товары</h2>
+                    <p class="mb-0 text-secondary">Поиск, фильтрация, категории и карточки товаров.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark h-100" th:href="@{/shop/categories}">
+                <div class="card-body">
+                    <h2 class="h5">Категории</h2>
+                    <p class="mb-0 text-secondary">Список категорий и связанные товары.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark h-100" th:href="@{/shop/orders}">
+                <div class="card-body">
+                    <h2 class="h5">Заказы</h2>
+                    <p class="mb-0 text-secondary">Статусы, товары в заказе и фильтры.</p>
+                </div>
+            </a>
+        </div>
+    </div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/loading.js}"></script>
 </body>

@@ -28,12 +28,7 @@
                                class="form-control"
                                th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
                                required>
-
-                        <div class="invalid-feedback"
-                             th:if="${#fields.hasErrors('username')}"
-                             th:errors="*{username}">
-                            Ошибка ввода имени
-                        </div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                     </div>
 
                     <div class="mb-3">
@@ -44,12 +39,7 @@
                                class="form-control"
                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
                                required>
-
-                        <div class="invalid-feedback"
-                             th:if="${#fields.hasErrors('password')}"
-                             th:errors="*{password}">
-                            Ошибка ввода пароля
-                        </div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                     </div>
 
                     <div class="mb-3">
@@ -60,17 +50,10 @@
                                class="form-control"
                                th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
                                required>
-
-                        <div class="invalid-feedback"
-                             th:if="${#fields.hasErrors('confirmPassword')}"
-                             th:errors="*{confirmPassword}">
-                            Ошибка повтора пароля
-                        </div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">
-                        Зарегистрироваться
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
                 </form>
 
                 <p class="text-center mt-3 mb-0">
@@ -81,6 +64,7 @@
         </div>
     </div>
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/loading.js}"></script>
 </body>

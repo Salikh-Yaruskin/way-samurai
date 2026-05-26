@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.name}">Товар</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/loading.css}">
+</head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/loading :: loading}"></div>
+
+<main class="container py-4">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h1 class="h3 mb-1" th:text="${product.name}">Товар</h1>
+            <div class="text-secondary">Артикул: <span th:text="${product.sku}">SKU</span></div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-primary" th:href="@{/shop/products/{id}/edit(id=${product.id})}">Редактировать</a>
+            <form th:action="@{/shop/products/{id}/delete(id=${product.id})}" method="post">
+                <button class="btn btn-outline-danger" type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5">Параметры</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Цена</dt>
+                        <dd class="col-sm-7" th:text="${product.price}">0</dd>
+                        <dt class="col-sm-5">Остаток</dt>
+                        <dd class="col-sm-7" th:text="${product.stockQuantity}">0</dd>
+                        <dt class="col-sm-5">Статус</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge text-bg-success" th:if="${product.active}">Активен</span>
+                            <span class="badge text-bg-secondary" th:if="${!product.active}">Отключен</span>
+                        </dd>
+                        <dt class="col-sm-5">Основная категория</dt>
+                        <dd class="col-sm-7">
+                            <a th:if="${product.primaryCategory != null}"
+                               th:href="@{/shop/categories/{id}(id=${product.primaryCategory.id})}"
+                               th:text="${product.primaryCategory.name}">
+                                Категория
+                            </a>
+                            <span th:if="${product.primaryCategory == null}" class="text-secondary">Не выбрана</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5">Дополнительные категории</h2>
+                    <form class="row g-2 mb-3" th:action="@{/shop/products/{id}/categories(id=${product.id})}" method="post">
+                        <div class="col">
+                            <select class="form-select" name="categoryId" required>
+                                <option value="">Выберите категорию</option>
+                                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">Категория</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" type="submit">Прикрепить</button>
+                        </div>
+                    </form>
+
+                    <ul class="list-group" th:if="${!#sets.isEmpty(product.categories)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="category : ${product.categories}">
+                            <a th:href="@{/shop/categories/{id}(id=${category.id})}" th:text="${category.name}">Категория</a>
+                            <form th:action="@{/shop/products/{id}/categories/{categoryId}/delete(id=${product.id},categoryId=${category.id})}" method="post">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Открепить</button>
+                            </form>
+                        </li>
+                    </ul>
+                    <p class="text-secondary mb-0" th:if="${#sets.isEmpty(product.categories)}">Дополнительные категории не прикреплены</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <h2 class="h5">Заказы с этим товаром</h2>
+            <ul class="list-group list-group-flush" th:if="${!#sets.isEmpty(product.orders)}">
+                <li class="list-group-item px-0" th:each="order : ${product.orders}">
+                    <a th:href="@{/shop/orders/{id}(id=${order.id})}">
+                        <span th:text="${order.customerName}">Покупатель</span>
+                        /
+                        <span th:text="${order.status}">NEW</span>
+                    </a>
+                </li>
+            </ul>
+            <p class="text-secondary mb-0" th:if="${#sets.isEmpty(product.orders)}">Заказов пока нет</p>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/loading.js}"></script>
+</body>
+</html>
