@@ -2,87 +2,47 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Заказ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/loading.css}">
 </head>
-<body class="bg-light">
+<body>
 <div th:replace="~{fragments/header :: header}"></div>
-<div th:replace="~{fragments/loading :: loading}"></div>
 
-<main class="container py-4">
-    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+<main>
+    <p th:if="${message}" th:text="${message}">Сообщение</p>
 
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div>
-            <h1 class="h3 mb-1">Заказ</h1>
-            <div class="text-secondary" th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">Дата</div>
-        </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-primary" th:href="@{/shop/orders/{id}/edit(id=${order.id})}">Редактировать</a>
-            <form th:action="@{/shop/orders/{id}/delete(id=${order.id})}" method="post">
-                <button class="btn btn-outline-danger" type="submit">Удалить</button>
+    <h1>Заказ</h1>
+    <p>Создан: <span th:text="${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">Дата</span></p>
+    <p>Покупатель: <span th:text="${order.customerName}">Имя</span></p>
+    <p>Email: <span th:text="${order.customerEmail}">email</span></p>
+    <p>Статус: <span th:text="${order.status}">NEW</span></p>
+
+    <p><a th:href="@{/shop/orders/{id}/edit(id=${order.id})}">Редактировать</a></p>
+    <form th:action="@{/shop/orders/{id}/delete(id=${order.id})}" method="post">
+        <button type="submit">Удалить</button>
+    </form>
+
+    <h2>Товары в заказе</h2>
+    <form th:action="@{/shop/orders/{id}/products(id=${order.id})}" method="post">
+        <select name="productId" required>
+            <option value="">Выберите товар</option>
+            <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}">Товар</option>
+        </select>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <p th:if="${#sets.isEmpty(order.products)}">Товары не добавлены</p>
+    <ul th:if="${!#sets.isEmpty(order.products)}">
+        <li th:each="product : ${order.products}">
+            <a th:href="@{/shop/products/{id}(id=${product.id})}" th:text="${product.name}">Товар</a>
+            /
+            <span th:text="${product.sku}">SKU</span>
+            /
+            <span th:text="${product.price}">0</span>
+            <form th:action="@{/shop/orders/{id}/products/{productId}/delete(id=${order.id},productId=${product.id})}" method="post">
+                <button type="submit">Убрать</button>
             </form>
-        </div>
-    </div>
-
-    <div class="row g-3">
-        <div class="col-lg-5">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="h5">Покупатель</h2>
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4">Имя</dt>
-                        <dd class="col-sm-8" th:text="${order.customerName}">Имя</dd>
-                        <dt class="col-sm-4">Email</dt>
-                        <dd class="col-sm-8" th:text="${order.customerEmail}">email</dd>
-                        <dt class="col-sm-4">Статус</dt>
-                        <dd class="col-sm-8"><span class="badge text-bg-info" th:text="${order.status}">NEW</span></dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-7">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h2 class="h5">Товары в заказе</h2>
-                    <form class="row g-2 mb-3" th:action="@{/shop/orders/{id}/products(id=${order.id})}" method="post">
-                        <div class="col">
-                            <select class="form-select" name="productId" required>
-                                <option value="">Выберите товар</option>
-                                <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}">Товар</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-primary" type="submit">Добавить</button>
-                        </div>
-                    </form>
-
-                    <ul class="list-group" th:if="${!#sets.isEmpty(order.products)}">
-                        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="product : ${order.products}">
-                            <div>
-                                <a th:href="@{/shop/products/{id}(id=${product.id})}" th:text="${product.name}">Товар</a>
-                                <div class="small text-secondary">
-                                    <span th:text="${product.sku}">SKU</span>
-                                    /
-                                    <span th:text="${product.price}">0</span>
-                                </div>
-                            </div>
-                            <form th:action="@{/shop/orders/{id}/products/{productId}/delete(id=${order.id},productId=${product.id})}" method="post">
-                                <button class="btn btn-sm btn-outline-danger" type="submit">Убрать</button>
-                            </form>
-                        </li>
-                    </ul>
-                    <p class="text-secondary mb-0" th:if="${#sets.isEmpty(order.products)}">Товары не добавлены</p>
-                </div>
-            </div>
-        </div>
-    </div>
+        </li>
+    </ul>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/loading.js}"></script>
 </body>
 </html>
