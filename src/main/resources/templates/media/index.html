@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Файлы</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/loading.css}">
+</head>
+<body class="bg-light">
+
+<div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/loading :: loading}"></div>
+
+<main class="py-4">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="h4 mb-3">Загрузка файла</h1>
+
+                        <div class="alert alert-success" th:if="${uploadedFileId != null}">
+                            Файл загружен.
+                            <a th:href="@{/media/{id}(id=${uploadedFileId})}" class="alert-link" target="_blank">
+                                Открыть
+                            </a>
+                        </div>
+
+                        <div class="alert alert-warning" th:if="${deleted}">
+                            Файл удален.
+                        </div>
+
+                        <form th:action="@{/media}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Фото, видео или документ</label>
+                                <input id="file"
+                                       name="file"
+                                       type="file"
+                                       class="form-control"
+                                       accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+                                       required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                Загрузить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h2 class="h4 mb-0">Загруженные файлы</h2>
+                    <span class="badge text-bg-secondary" th:text="${#lists.size(files)}">0</span>
+                </div>
+
+                <div class="alert alert-secondary" th:if="${#lists.isEmpty(files)}">
+                    Файлы еще не загружены.
+                </div>
+
+                <div class="row g-3" th:if="${!#lists.isEmpty(files)}">
+                    <div class="col-md-6" th:each="file : ${files}">
+                        <div class="card h-100 shadow-sm">
+                            <img th:if="${file.type.name() == 'PHOTO'}"
+                                 th:src="@{/media/{id}(id=${file.id})}"
+                                 class="card-img-top object-fit-cover"
+                                 style="height: 220px;"
+                                 th:alt="${file.originalFilename}">
+
+                            <video th:if="${file.type.name() == 'VIDEO'}"
+                                   class="card-img-top bg-dark"
+                                   style="height: 220px;"
+                                   controls>
+                                <source th:src="@{/media/{id}(id=${file.id})}"
+                                        th:type="${file.contentType}">
+                            </video>
+
+                            <div th:if="${file.type.name() == 'DOCUMENT'}"
+                                 class="d-flex align-items-center justify-content-center bg-body-tertiary"
+                                 style="height: 220px;">
+                                <span class="display-6 text-secondary">DOC</span>
+                            </div>
+
+                            <div class="card-body">
+                                <h3 class="h6 card-title text-truncate" th:text="${file.originalFilename}">
+                                    filename.jpg
+                                </h3>
+
+                                <p class="card-text small text-secondary mb-3">
+                                    <span th:text="${file.type}">PHOTO</span>
+                                    <span> / </span>
+                                    <span th:text="${file.contentType}">image/jpeg</span>
+                                    <span> / </span>
+                                    <span th:text="${file.sizeBytes}">0</span>
+                                    <span> bytes</span>
+                                </p>
+
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a class="btn btn-outline-primary btn-sm"
+                                       th:href="@{/media/{id}(id=${file.id})}"
+                                       target="_blank">
+                                        Просмотр
+                                    </a>
+
+                                    <a class="btn btn-outline-secondary btn-sm"
+                                       th:href="@{/media/{id}/download(id=${file.id})}">
+                                        Скачать
+                                    </a>
+
+                                    <form th:action="@{/media/{id}/delete(id=${file.id})}"
+                                          method="post"
+                                          class="m-0">
+                                        <input type="hidden"
+                                               th:if="${_csrf != null}"
+                                               th:name="${_csrf.parameterName}"
+                                               th:value="${_csrf.token}">
+
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            Удалить
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/loading.js}"></script>
+</body>
+</html>

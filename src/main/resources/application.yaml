@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: demo
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
   h2:
     console:
       enabled: true
